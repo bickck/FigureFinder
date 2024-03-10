@@ -6,6 +6,7 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.DataNode;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.scheduling.annotation.Async;
 
@@ -17,7 +18,5 @@ public interface WebScrape {
 
     @Async
     public void findFigureList(String searchText, Language language);
-
-    public void findFigureCost();
 
 }

@@ -11,45 +11,44 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Transformation {
+public class LanguageTransformation {
 
     private final String apiUrl = "https://openapi.naver.com/v1/papago/n2mt";
-    private final String id = "SzFXp9sZz8i2w8HVfKJX";
-    private final String securityCode = "Zl3VoFLzx3";
+    private final String id = "";
+    private final String securityCode = "";
 
     private String targetLanguage = "ko";
 
-    public Transformation(String targetLanguage) {
+    public LanguageTransformation(String targetLanguage) {
         this.targetLanguage = targetLanguage;
     }
 
-    public String transWord(String words){
+    public String transWord(String words) {
 
         String text = null;
 
         try {
             text = URLEncoder.encode(words, "UTF-8");
+        } catch (Exception ex) {
+            throw new RuntimeException("변환에 실패하였습니다.");
         }
-        catch (Exception ex) {
 
-        }
+        Map<String, String> requestHeaders = new HashMap<>();
+        requestHeaders.put("", id);
+        requestHeaders.put("", securityCode);
 
-        Map<String,String> requestHeaders = new HashMap<>();
-        requestHeaders.put("",id);
-        requestHeaders.put("",securityCode);
-
-        return post(apiUrl,requestHeaders,text);
+        return post(apiUrl, requestHeaders, text);
     }
 
-    private String post(String apiUrl,Map<String,String> requestHeaders, String text) {
+    private String post(String apiUrl, Map<String, String> requestHeaders, String text) {
         HttpURLConnection connection = connect(apiUrl);
-        String postParams = "source=ko&target="+targetLanguage+"&text=" + text;
+        String postParams = "source=ko&target=" + targetLanguage + "&text=" + text;
 
         try {
             connection.setRequestMethod(HttpMethod.POST.toString());
 
-            for(Map.Entry<String,String> header : requestHeaders.entrySet()) {
-                connection.setRequestProperty(header.getKey(),header.getValue());
+            for (Map.Entry<String, String> header : requestHeaders.entrySet()) {
+                connection.setRequestProperty(header.getKey(), header.getValue());
             }
             connection.setDoOutput(true);
             try (DataOutputAsStream wr = new DataOutputAsStream((DataOutput) connection.getOutputStream())) {
@@ -64,8 +63,8 @@ public class Transformation {
                 return readBody(connection.getErrorStream());
             }
         } catch (IOException exception) {
-            throw new RuntimeException("API 요청과 응답 실패",exception);
-        }finally {
+            throw new RuntimeException("API 요청과 응답 실패", exception);
+        } finally {
             connection.disconnect();
         }
     }
@@ -81,7 +80,7 @@ public class Transformation {
         }
     }
 
-    private String readBody(InputStream body){
+    private String readBody(InputStream body) {
         InputStreamReader streamReader = new InputStreamReader(body);
 
         try (BufferedReader lineReader = new BufferedReader(streamReader)) {

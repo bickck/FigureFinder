@@ -4,35 +4,38 @@ import com.find.figurefinder.common.FiugreSiteUrl;
 import com.find.figurefinder.common.Language;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.DataNode;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.scheduling.annotation.Async;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WebScrapeComicArt implements WebScrape {
+public class WebScrapeAmiAmiEN implements WebScrape {
 
     private FiugreSiteUrl fiugreSiteUrl;
-    private final String PRODUCT_LIST_QUERY = "prdList grid8";
-    // 아미아미의 이미지는 해당 컨테이너의 자식 노드에 있음
-    private final String PRODUCT_NAME_QUERY = ".name > a > span";
-    private final String PRODUCT_PRICE_QUERY = ".description > ul > xans-record- halfli2 > span";
-    private final String PRODUCT_IMAGE_QUERY = ".description > ul > xans-record- > span";
-    private final String PRODUCT_BRAND_QUERY = ".thumbnail > .prdImg > a > img";
 
-    public WebScrapeComicArt() {
+    // UL태크 하위 노드
+    private final String PRODUCT_LIST_QUERY = "new-items__inner";
+    private final String PRODUCT_NAME_QUERY = "newly-added-items__item__name";
+    // 아미아미의 이미지는 해당 컨테이너의 자식 노드에 있음
+    private final String PRODUCT_IMAGE_QUERY = "newly-added-items__item__image_item";
+    private final String PRODUCT_PRICE_QUERY = "newly-added-items__item__price";
+    private final String PRODUCT_BRAND_QUERY = "newly-added-items__item__brand";
+
+    public WebScrapeAmiAmiEN() {
         this.fiugreSiteUrl = new FiugreSiteUrl();
     }
 
+    @Async
     @Override
     public void findFigureList(String searchText, Language language) {
 
         try {
-
-            Document document = Jsoup.connect(fiugreSiteUrl.getComicArtUrl(searchText))
+            //2024-02-27 유저 에이전트 문제 해결 방법 찾기
+            Document document = Jsoup.connect(fiugreSiteUrl.getAmiamiUrl(searchText, Language.EN))
                     .userAgent("Mozilla/5.0").method(Connection.Method.GET).execute().parse();
 
             Elements productList = document.getElementsByClass(PRODUCT_LIST_QUERY);
@@ -47,13 +50,13 @@ public class WebScrapeComicArt implements WebScrape {
                 List<String> product = getProduct(productName, productPrice, productImgURL, productBrand);
 
             }
-
         } catch (IOException exception) {
-            throw new RuntimeException("코믹스아트 사이트와의 연결에 실패하였습니다.");
+            throw new RuntimeException("아미아미 사이트와의 연결을 실패하였습니다.");
         }
+
     }
 
-    private List<String> getProduct(Element name, Element price, Element img, Element brand) {
+    protected List<String> getProduct(Element name, Element price, Element img, Element brand) {
 
         List<String> product = new ArrayList<>();
 
@@ -65,23 +68,19 @@ public class WebScrapeComicArt implements WebScrape {
         return product;
     }
 
-    private String getProductName(Element element) {
-        if(element == null) return "";
+    protected String getProductName(Element element) {
         return element.text();
     }
 
-    private String getProductPrice(Element element) {
-        if(element == null) return "";
+    protected String getProductPrice(Element element) {
         return element.text();
     }
 
-    private String getProductImgURL(Element element) {
-        if(element == null) return "";
+    protected String getProductImgURL(Element element) {
         return element.attr("href");
     }
 
-    private String getProductBrand(Element element) {
-        if(element == null) return "";
+    protected String getProductBrand(Element element) {
         return element.text();
     }
 }
