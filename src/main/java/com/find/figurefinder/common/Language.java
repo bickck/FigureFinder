@@ -5,5 +5,4 @@ public enum Language {
     KO,
     EN,
     JP
-
 }

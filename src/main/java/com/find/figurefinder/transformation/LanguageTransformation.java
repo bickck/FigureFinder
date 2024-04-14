@@ -1,101 +1,78 @@
 package com.find.figurefinder.transformation;
 
-import com.fasterxml.jackson.core.io.DataOutputAsStream;
-import org.springframework.http.HttpMethod;
+import com.deepl.api.*;
+import com.find.figurefinder.common.GlobalValiable;
+import jakarta.websocket.DecodeException;
+import org.json.simple.JSONArray;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
+import org.json.simple.JSONObject;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class LanguageTransformation {
 
-    private final String apiUrl = "https://openapi.naver.com/v1/papago/n2mt";
-    private final String id = "";
-    private final String securityCode = "";
+    private final String key = "";
 
-    private String targetLanguage = "ko";
+    private String sourceLanguage;
+    private String targetLanguage;
 
-    public LanguageTransformation(String targetLanguage) {
+    public LanguageTransformation(String sourceLanguage, String targetLanguage) {
+        this.sourceLanguage = sourceLanguage;
         this.targetLanguage = targetLanguage;
     }
 
-    public String transWord(String words) {
+    public String requestTransWord(String word) {
 
-        String text = null;
+        if (word.isEmpty()) return "";
 
-        try {
-            text = URLEncoder.encode(words, "UTF-8");
-        } catch (Exception ex) {
-            throw new RuntimeException("변환에 실패하였습니다.");
-        }
+        if (GlobalValiable.getLanguageTransCount() == GlobalValiable.getLimitLanguageTransCount()) return "";
 
-        Map<String, String> requestHeaders = new HashMap<>();
-        requestHeaders.put("", id);
-        requestHeaders.put("", securityCode);
-
-        return post(apiUrl, requestHeaders, text);
-    }
-
-    private String post(String apiUrl, Map<String, String> requestHeaders, String text) {
-        HttpURLConnection connection = connect(apiUrl);
-        String postParams = "source=ko&target=" + targetLanguage + "&text=" + text;
+        TextResult textResult = null;
+        Translator translator = new Translator(key);
 
         try {
-            connection.setRequestMethod(HttpMethod.POST.toString());
 
-            for (Map.Entry<String, String> header : requestHeaders.entrySet()) {
-                connection.setRequestProperty(header.getKey(), header.getValue());
-            }
-            connection.setDoOutput(true);
-            try (DataOutputAsStream wr = new DataOutputAsStream((DataOutput) connection.getOutputStream())) {
-                wr.write(postParams.getBytes());
-                wr.flush();
-            }
+            textResult = translator.translateText(word, sourceLanguage, targetLanguage);
 
-            int responseCode = connection.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) { // 정상 응답
-                return readBody(connection.getInputStream());
-            } else {  // 에러 응답
-                return readBody(connection.getErrorStream());
-            }
-        } catch (IOException exception) {
-            throw new RuntimeException("API 요청과 응답 실패", exception);
+        } catch (DeepLException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         } finally {
-            connection.disconnect();
+            GlobalValiable.setLanguageTransCount(GlobalValiable.getLanguageTransCount() + 1);
         }
-    }
 
-    private HttpURLConnection connect(String apiUrl) {
-        try {
-            URL url = new URL(apiUrl);
-            return (HttpURLConnection) url.openConnection();
-        } catch (MalformedURLException exception) {
-            throw new RuntimeException("API URL이 잘못되었습니다. : " + apiUrl, exception);
-        } catch (IOException exception) {
-            throw new RuntimeException("연결이 실패했습니다. : " + apiUrl, exception);
-        }
-    }
-
-    private String readBody(InputStream body) {
-        InputStreamReader streamReader = new InputStreamReader(body);
-
-        try (BufferedReader lineReader = new BufferedReader(streamReader)) {
-            StringBuilder responseBody = new StringBuilder();
-
-            String line;
-            while ((line = lineReader.readLine()) != null) {
-                responseBody.append(line);
-            }
-
-            return responseBody.toString();
-        } catch (IOException e) {
-            throw new RuntimeException("API 응답을 읽는데 실패했습니다.", e);
-        }
+        return textResult.getText();
     }
 
 
+//    public String requestTransWord(String words) {
+//
+//        if (GlobalValiable.getLanguageTransCount() == GlobalValiable.getLimitLanguageTransCount()) return "";
+//
+//        String transWord = "";
+//        WebResource webResource = new WebResourceImpl();
+//
+//        Map<String, String> requestDataHeader = new HashMap<>();
+//        requestDataHeader.put("text", words);
+//        requestDataHeader.put("target_lang", targetLanguage);
+//
+//        Map<Object, Object> requestHeaders = new HashMap<>();
+//        requestHeaders.put("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+//        requestHeaders.put("Authorization", key);
+//        requestHeaders.put("data", requestDataHeader);
+//
+//        Iterator<?> transResult = webResource.requestWebResources(apiUrl, HttpMethod.POST, requestHeaders).iterator();
+//
+//        while (transResult.hasNext()) {
+//            JSONObject jsonArray = (JSONObject) transResult.next();
+//
+//        }
+//
+//        return transWord;
+//    }
 }
