@@ -2,7 +2,7 @@ package com.find.figurefinder.common;
 
 import java.util.Map;
 
-public class GlobalValiable {
+public class GlobalValiue {
 
     private static int limitLanguageTransCount = 500000;
 
@@ -15,7 +15,7 @@ public class GlobalValiable {
     }
 
     public static void setLimitLanguageTransCount(int limitLanguageTransCount) {
-        GlobalValiable.limitLanguageTransCount = limitLanguageTransCount;
+        GlobalValiue.limitLanguageTransCount = limitLanguageTransCount;
     }
 
     public static int getLanguageTransCount() {
@@ -23,7 +23,7 @@ public class GlobalValiable {
     }
 
     public static void setLanguageTransCount(int languageTransCount) {
-        GlobalValiable.languageTransCount = languageTransCount;
+        GlobalValiue.languageTransCount = languageTransCount;
     }
 
     public static Map<Object, Object> getTodayExchageRate() {
@@ -31,7 +31,7 @@ public class GlobalValiable {
     }
 
     public static void setTodayExchageRate(Map<Object, Object> todayExchageRate) {
-        GlobalValiable.todayExchageRate = todayExchageRate;
+        GlobalValiue.todayExchageRate = todayExchageRate;
     }
 
 

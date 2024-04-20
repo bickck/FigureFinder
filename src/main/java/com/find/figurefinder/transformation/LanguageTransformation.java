@@ -1,17 +1,7 @@
 package com.find.figurefinder.transformation;
 
 import com.deepl.api.*;
-import com.find.figurefinder.common.GlobalValiable;
-import jakarta.websocket.DecodeException;
-import org.json.simple.JSONArray;
-
-import org.json.simple.JSONObject;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import com.find.figurefinder.common.GlobalValiue;
 
 public class LanguageTransformation {
 
@@ -29,7 +19,7 @@ public class LanguageTransformation {
 
         if (word.isEmpty()) return "";
 
-        if (GlobalValiable.getLanguageTransCount() == GlobalValiable.getLimitLanguageTransCount()) return "";
+        if (GlobalValiue.getLanguageTransCount() == GlobalValiue.getLimitLanguageTransCount()) return "";
 
         TextResult textResult = null;
         Translator translator = new Translator(key);
@@ -43,7 +33,7 @@ public class LanguageTransformation {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
-            GlobalValiable.setLanguageTransCount(GlobalValiable.getLanguageTransCount() + 1);
+            GlobalValiue.setLanguageTransCount(GlobalValiue.getLanguageTransCount() + 1);
         }
 
         return textResult.getText();

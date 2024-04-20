@@ -1,12 +1,10 @@
 package com.find.figurefinder.figurefinder;
 
+import com.find.figurefinder.common.FigureSiteInfo;
+import com.find.figurefinder.common.FigureSiteUrl;
+import com.find.figurefinder.common.Language;
 import com.find.figurefinder.webscrape.WebScrape;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.DataNode;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+import com.find.figurefinder.webscrape.WebScrapeImpl;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -14,66 +12,59 @@ import java.io.IOException;
 
 public class WebScrapeTest {
 
+
     @Test
-    public void queryTest() {
+    public void connectAmiAmiJPTest() throws IOException {
 
+        FigureSiteUrl figureSiteUrl = new FigureSiteUrl();
+        String siteUrl = figureSiteUrl.getAmiamiUrl("BlueArchive", Language.JP);
 
-        try {
-            Document document = Jsoup.connect("http://localhost:3000/").get();
+        WebScrape webScrape = new WebScrapeImpl();
+        webScrape.scrapeUrl(siteUrl, FigureSiteInfo.AMIAMIJP);
 
-            // 쿼리 표현
-            Elements elements = document.select(".test");
-            Elements elements1 = document.select(".test.grd");
-            Elements elements2 = document.getElementsByClass("test grd");
-            Element elements3 = document.select("ul > li > span").last();
-            Element elements4 = document.select("ul > li > a").first();
-
-            System.out.println(elements4.attr("href"));
-
-
-        } catch (IOException ioException) {
-            throw new RuntimeException();
-        }
     }
 
     @Test
-    public void jsoupTest() {
+    public void connectAmiAmiENTest() throws IOException {
 
-        try {
+        FigureSiteUrl figureSiteUrl = new FigureSiteUrl();
+        String siteUrl = figureSiteUrl.getAmiamiUrl("BlueArchive", Language.EN);
 
-            Document document = Jsoup.connect("http://localhost:3000/").get();
+        WebScrape webScrape = new WebScrapeImpl();
+        webScrape.scrapeUrl(siteUrl, FigureSiteInfo.AMIAMIEN);
 
-            Elements elements = document.select(".test");
-            Elements elements1 = document.select(".test.grd");
-            Elements elements2 = document.getElementsByClass("test grd");
+    }
 
-            int nodeSize = 0;
-            String id = null;
-            String html = null;
+    @Test
+    public void connectComicsArtTest() throws IOException {
 
-            // 결과 : DataNode 값은 없음
-            for (DataNode dataNode : elements2.dataNodes()) {
-                String data = dataNode.getWholeData();
-                System.out.println(data);
-            }
+        FigureSiteUrl figureSiteUrl = new FigureSiteUrl();
+        String siteUrl = figureSiteUrl.getAmiamiUrl("BlueArchive", Language.JP);
 
-            for (Element element : elements) {
-                nodeSize = element.childNodeSize();
-                id = element.id();
-            }
+        WebScrape webScrape = new WebScrapeImpl();
+        webScrape.scrapeUrl(siteUrl, FigureSiteInfo.AMIAMIJP);
 
-            html = elements.html();
+    }
 
-            System.out.println(elements1.html());
-            System.out.println(elements2.html());
-            System.out.println(id);
-            System.out.println(html);
-            System.out.println(nodeSize);
+    @Test
+    public void connectRabbitCompanyTest() throws IOException {
 
+        FigureSiteUrl figureSiteUrl = new FigureSiteUrl();
+        String siteUrl = figureSiteUrl.getAmiamiUrl("BlueArchive", Language.JP);
 
-        } catch (IOException ioException) {
-            throw new RuntimeException();
-        }
+        WebScrape webScrape = new WebScrapeImpl();
+        webScrape.scrapeUrl(siteUrl, FigureSiteInfo.AMIAMIJP);
+
+    }
+
+    @Test
+    public void connectManiaHouseTest() throws IOException {
+
+        FigureSiteUrl figureSiteUrl = new FigureSiteUrl();
+        String siteUrl = figureSiteUrl.getAmiamiUrl("BlueArchive", Language.JP);
+
+        WebScrape webScrape = new WebScrapeImpl();
+        webScrape.scrapeUrl(siteUrl, FigureSiteInfo.AMIAMIJP);
 
     }
 }

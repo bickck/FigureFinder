@@ -3,7 +3,7 @@ package com.find.figurefinder.common;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-public class FiugreSiteUrl {
+public class FigureSiteUrl {
 
     private final String amiamiEN = "https://www.amiami.com/";
     private final String amiamiJP = "https://www.amiami.jp/";
@@ -21,7 +21,8 @@ public class FiugreSiteUrl {
         String url = null;
 
         if (Language.JP.equals(language)) {
-
+            url = amiamiJP + "/top/search/list?hanbaichu=1&s_st_list_preorder_available=1&s_st_list_backorder_available=1" +
+                    "&s_st_list_newitem_available=1&s_st_condition_flg=1&s_sortkey=&s_cate_tag=1&s_keywords=" + text + "&pagemax=60";
         } else {
             url = amiamiEN + "eng/search/list/?s_keywords=" + text + "&s_cate_tag=1&s_st_list_preorder_available=1";
         }
@@ -45,9 +46,24 @@ public class FiugreSiteUrl {
         return heroTime + text;
     }
 
-    private String getNonno21(String searchText) throws UnsupportedEncodingException{
+    private String getNonno21Url(String searchText) throws UnsupportedEncodingException {
         String text = URLEncoder.encode(searchText, "UTF-8");
         return nonno21 + text;
+    }
+
+    private String getFigurePresso(String searchText) throws UnsupportedEncodingException {
+        String text = URLEncoder.encode(searchText, "UTF-8");
+        return figurePresso + text;
+    }
+
+    private String getRabitCompanyUrl(String searchText) throws UnsupportedEncodingException {
+        String text = URLEncoder.encode(searchText, "UTF-8");
+        return rabitCompany + text;
+    }
+
+    private String getFigureSailerUrl(String searchText) throws UnsupportedEncodingException {
+        String text = URLEncoder.encode(searchText, "UTF-8");
+        return figureSailer + text;
     }
 
 }
